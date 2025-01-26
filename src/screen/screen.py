@@ -28,7 +28,7 @@ class Screen(object):
         self.current_line = (self.current_line - 1) % len(self.lines)
 
     def enter(self):
-        self.on_enter(self.current_line)
+        pass
 
 
 if __name__ == '__main__':
