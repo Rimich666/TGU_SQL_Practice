@@ -1,7 +1,6 @@
 import os
 import sys
 from signal import signal, SIGINT
-import keyboard
 from src.app.app import App
 from src.terminal.background import Back
 from src.terminal.cursor import Cursor
@@ -9,10 +8,14 @@ from src.terminal.terminal import Terminal
 from src.terminal.text import Text
 
 
-def handler(signal_received, frame):
+def set_default():
     Terminal.clear()
     Cursor.show()
     sys.stdout.write(Back.default + Text.default)
+
+
+def handler(signal_received, frame):
+    set_default()
     exit(0)
 
 
@@ -21,13 +24,13 @@ def main():
     if is_pycharm:
         print('Не надо запускать меня из Pycharm. У Вас есть эмулятор терминала, запуститесь от туда.')
         exit(1)
+    signal(SIGINT, handler)
     Cursor.hide()
     app = App()
-    keyboard.on_press(lambda key: app.on_press(key))
     app.start()
+    set_default()
 
 
 if __name__ == '__main__':
 
-    signal(SIGINT, handler)
     main()

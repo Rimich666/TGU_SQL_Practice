@@ -34,3 +34,6 @@ def clean_after_yourself(conn):
         query = f.read()
         exec_script(conn, query)
 
+
+if __name__ == '__main__':
+    initialize_database(get_connection())
