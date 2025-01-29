@@ -52,12 +52,12 @@ class Key(object):
 
             try:
                 code = ord(sys.stdin.read(1))
-
+                print('code1', code)
                 if code == 10:
                     result = Key.enter
                 if code == 27:
                     code = ord(sys.stdin.read(2)[1])
-                    print(code)
+                    print('code2', code)
                     if code == 65:
                         result = Key.up
                     elif code == 66:
@@ -76,4 +76,4 @@ class Key(object):
 
 if __name__ == '__main__':
     key = Key.wait()
-    print(key)
+    print('выход', key)

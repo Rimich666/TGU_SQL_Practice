@@ -1,6 +1,6 @@
 import os
 import sys
-from signal import signal, SIGINT
+from signal import signal, SIGINT, SIGTSTP
 from src.app.app import App
 from src.terminal.background import Back
 from src.terminal.cursor import Cursor
@@ -25,6 +25,7 @@ def main():
         print('Не надо запускать меня из Pycharm. У Вас есть эмулятор терминала, запуститесь от туда.')
         exit(1)
     signal(SIGINT, handler)
+    signal(SIGTSTP, handler)
     Cursor.hide()
     app = App()
     app.start()

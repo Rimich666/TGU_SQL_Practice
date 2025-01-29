@@ -15,7 +15,7 @@ class Screen(object):
         self._title = None
         self._header = None
         self._footer = None
-        self.lines = []
+        self._lines = []
 
     def print(self):
         sys.stdout.write(Back.default + Text.default)
@@ -23,7 +23,7 @@ class Screen(object):
             print(self._title + '\n')
         if self._header:
             print(self._header)
-        for i, line in enumerate(self.lines):
+        for i, line in enumerate(self._lines):
             sys.stdout.write(Back.default + Text.default + f'{i} ')
             for j, value in enumerate(line):
                 if i == self.current_line and j == self.current_column:
@@ -35,8 +35,8 @@ class Screen(object):
         sys.stdout.write(Back.default + Text.default)
 
     def change_line(self, direction):
-        self.current_line = (self.current_line + direction) % len(self.lines)
-        line_end = len(self.lines[self.current_line]) - 1
+        self.current_line = (self.current_line + direction) % len(self._lines)
+        line_end = len(self._lines[self.current_line]) - 1
         if self.current_column > line_end:
             self.current_column = line_end
 
@@ -47,10 +47,10 @@ class Screen(object):
         self.change_line(-1)
 
     def right(self):
-        self.current_column = (self.current_column + 1) % len(self.lines[self.current_line])
+        self.current_column = (self.current_column + 1) % len(self._lines[self.current_line])
 
     def left(self):
-        self.current_column = (self.current_column - 1) % len(self.lines[self.current_line])
+        self.current_column = (self.current_column - 1) % len(self._lines[self.current_line])
 
     def enter(self):
         pass
@@ -78,8 +78,7 @@ class Screen(object):
             after = length - len_val - before
             return f"{before * ' '}{val}{after * ' '}"
 
-        return list(map(lambda row: tuple([get_cell(row[i], self._widths[i]) for i in range(len(row))]), rows))
-        pass
+        return list(map(lambda row: list([get_cell(row[i], self._widths[i]) for i in range(len(row))]), rows))
 
 
 if __name__ == '__main__':
