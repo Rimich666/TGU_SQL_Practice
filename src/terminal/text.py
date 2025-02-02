@@ -8,3 +8,5 @@ class Text(object):
     cyan = "\033[36m"
     white = "\033[37m"
     default = "\033[39m"
+    bold = "\033[1m"
+    thin = "\033[22m"

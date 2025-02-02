@@ -1,5 +1,3 @@
-import sys
-
 
 class Back(object):
     black = "\033[40m"

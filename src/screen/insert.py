@@ -1,16 +1,17 @@
 from src.base.pragma import get_fields
+from src.cell.cell import Cell
 from src.screen.screen import Screen
 
 
 class Insert(Screen):
-    def __init__(self, table):
+    def __init__(self, table, actions):
         super().__init__()
         self._table = table
         self._fields = get_fields(table)
         self._headers = self._fields[0]
         self._widths = self._fields[1]
         self._lines = self.make_lines(self._fields[2:])
-        self._lines.append(('Назад',))
+        super().set_actions()
         self.make_header()
 
     def make_header(self):
@@ -18,5 +19,5 @@ class Insert(Screen):
         self._header = f"{self._headers} {' ' * 10}value{' ' * 10}"
 
     def make_lines(self, rows):
-        lines = list(map(lambda line: line + [f"{' ' * 25}"], super().make_lines(rows)))
+        lines = list(map(lambda line: line + [Cell(f"{' ' * 25}")], super().make_lines(rows)))
         return lines

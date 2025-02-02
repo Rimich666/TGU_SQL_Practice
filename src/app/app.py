@@ -8,13 +8,25 @@ from wait_key import Key
 
 class App(object):
     def __init__(self):
-        self.actions_menu = ActionsMenu(self.enter_action)
-        self.tables_menu = TablesMenu(self.enter_table)
+        self.actions_menu = ActionsMenu(
+            [
+                ('Добавить', self._insert),
+                ('Посмотреть', self._select),
+                ('Изменить', self._update),
+                ('Удалить', self._delete),
+                ('Назад', self.pop_screen)
+            ]
+        )
+        self.tables_menu = TablesMenu(
+            self.enter_table,
+            [
+                ('Выход', self._stop)
+            ]
+        )
         self.screens = []
         self.conn = get_connection()
         self._is_run = True
         self._table = None
-        self._actions = [self._insert, self._select, self._update, self._delete, self.pop_screen]
         initialize_database(self.conn)
 
     def on_press(self, key):
@@ -52,8 +64,11 @@ class App(object):
                 self._is_run = False
 
     def _insert(self):
-        self.add_screen(Insert(self._table))
-        pass
+        self.add_screen(Insert(
+            self._table,
+            [
+                ('Назад', self.pop_screen)
+            ]))
 
     def _select(self):
         pass
@@ -75,11 +90,7 @@ class App(object):
         if self._table is None:
             self.pop_screen()
             return
-        self._actions[index]()
 
     def enter_table(self, name):
-        if name == 'Выход':
-            self._stop()
-            return
         self._table = name
         self.add_screen(self.actions_menu)
