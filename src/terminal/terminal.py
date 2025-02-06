@@ -8,7 +8,7 @@ class Terminal(object):
 
     @staticmethod
     def clear():
-        sys.stdout.write("\033[H\033[2J")
+        sys.stdout.write("\033[H\033[J")
 
 
 

@@ -9,12 +9,32 @@ class Key(object):
     up = 'up'
     enter = 'enter'
     close = 'close'
+    back = 'backspace'
+    delete = 'delete'
+    home = 'home'
+    end = 'end'
+
+    edit = [back, delete, home, end, enter, close, left, right]
 
     @staticmethod
-    def wait():
-        key = None
-        while key is None:
-            key = Key._wait()
+    def control(key):
+        return key in [Key.left, Key.right, Key.down, Key.up, Key.enter, Key.close]
+
+    @staticmethod
+    def number(key):
+        return key in [str(i) for i in range(10)] + ['.'] + Key.edit
+
+    @staticmethod
+    def chars(key):
+        return ord(key) > 31 or key in Key.edit
+
+    @staticmethod
+    def wait(check=control):
+        # key = None
+        # while key is None:
+        key = Key._wait()
+        if not check(key):
+            key = None
         return key
 
     @staticmethod
@@ -23,12 +43,15 @@ class Key(object):
         result = None
         if os.name == 'nt':
             import msvcrt
-            code = ord(msvcrt.getch())
+            key = msvcrt.getch()
+            code = ord(key)
             print(code)
             if code == 13:
                 result = Key.enter
             elif code == 3:
                 result = Key.close
+            elif code == 8:
+                result = Key.back
             elif code == 0 or 0xe0 or 3:
                 code = ord(msvcrt.getch())
                 print(code)
@@ -40,6 +63,14 @@ class Key(object):
                     result = Key.left
                 elif code == 77:
                     result = Key.right
+                elif code == 83:
+                    result = Key.delete
+                elif code == 71:
+                    result = Key.home
+                elif code == 79:
+                    result = Key.end
+            elif code > 31:
+                result = key
 
         else:
             import termios
@@ -51,21 +82,32 @@ class Key(object):
             termios.tcsetattr(fd, termios.TCSANOW, new_attr)
 
             try:
-                code = ord(sys.stdin.read(1))
+                key = sys.stdin.read(1)
+                code = ord(key)
                 print('code1', code)
                 if code == 10:
                     result = Key.enter
-                if code == 27:
+                elif code == 127:
+                    result = Key.back
+                elif code == 27:
                     code = ord(sys.stdin.read(2)[1])
                     print('code2', code)
                     if code == 65:
                         result = Key.up
+                    elif code == 51:
+                        result = Key.delete
                     elif code == 66:
                         result = Key.down
                     elif code == 68:
                         result = Key.left
                     elif code == 67:
                         result = Key.right
+                    elif code == 72:
+                        result = Key.home
+                    elif code == 70:
+                        result = Key.end
+                elif code > 31:
+                    result = key
             except IOError:
                 pass
             finally:
@@ -75,5 +117,7 @@ class Key(object):
 
 
 if __name__ == '__main__':
-    key = Key.wait()
+    key = Key.wait(Key.control)
     print('выход', key)
+    key2 = Key.wait(Key.number)
+    print('выход', key2)

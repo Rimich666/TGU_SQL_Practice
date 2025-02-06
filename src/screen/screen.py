@@ -1,8 +1,10 @@
 import sys
 
 from src.cell.action_cell import ActionCell
-from src.cell.cell import Cell, Align
+from src.cell.cell import Cell, Align, Mode
+from src.cell.edit_cell import EditCell
 from src.terminal.background import Back
+from src.terminal.cursor import Cursor
 from src.terminal.text import Text
 
 
@@ -65,8 +67,12 @@ class Screen(object):
         cell = self._lines[self.current_line][self.current_column]
         if isinstance(cell, ActionCell):
             cell.enter()
+        elif isinstance(cell, EditCell):
+            cell.enter()
+            return cell
         else:
-            self.on_enter(cell.enter())
+            if self.on_enter:
+                self.on_enter(cell.enter())
 
     def make_header(self):
         def get_head(val, length):

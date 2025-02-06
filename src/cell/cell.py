@@ -1,13 +1,46 @@
 import sys
 
 from src.terminal.background import Back
+from src.terminal.cursor import Cursor
 from src.terminal.text import Text
+from wait_key import Key
+
+
+class ValueType(object):
+    text = 'string',
+    integer = 'integer',
+    real = 'float',
+    date = 'datetime'
+    map = {
+        'INTEGER': integer,
+        'Datetime': date,
+        'Utf8': text
+    }
+    check_map = {
+        text: Key.chars,
+        integer: Key.number,
+        real: Key.number,
+        date: Key.number
+    }
+
+
+class Mode(object):
+    edit = 0,
+    view = 1,
+    choice = 2,
+    action = 3
 
 
 class Align(object):
     left = 1
     center = 2
     right = 0
+    map = {
+        ValueType.text: left,
+        ValueType.integer: right,
+        ValueType.real: right,
+        ValueType.date: right
+    }
 
 
 class CellParam(object):
@@ -29,6 +62,7 @@ class Cell(object):
         self._active = CellParam(Text.black, Back.white)
         self._param = self._not_active
         self._default = CellParam()
+        self.mode = Mode.view
 
     def print(self):
         self._param.print()
@@ -49,6 +83,9 @@ class Cell(object):
         self._align = align
 
     def enter(self):
+        return self._value
+
+    def value(self):
         return self._value
 
 

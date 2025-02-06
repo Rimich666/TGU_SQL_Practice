@@ -1,5 +1,5 @@
 from src.base.pragma import get_fields
-from src.cell.cell import Cell
+from src.cell.edit_cell import EditCell, ValueType
 from src.screen.screen import Screen
 
 
@@ -10,6 +10,7 @@ class Insert(Screen):
         self._fields = get_fields(table)
         self._headers = self._fields[0]
         self._widths = self._fields[1]
+        self._actions = actions
         self._lines = self.make_lines(self._fields[2:])
         super().set_actions()
         self.make_header()
@@ -19,5 +20,8 @@ class Insert(Screen):
         self._header = f"{self._headers} {' ' * 10}value{' ' * 10}"
 
     def make_lines(self, rows):
-        lines = list(map(lambda line: line + [Cell(f"{' ' * 25}")], super().make_lines(rows)))
+        lines = list(map(lambda line: line + [
+            EditCell(
+                '', 25, ValueType.map[line[1].value()]
+            )], super().make_lines(rows)))
         return lines

@@ -26,12 +26,11 @@ def main():
         exit(1)
     signal(SIGINT, handler)
     signal(SIGTSTP, handler)
-    Cursor.hide()
     app = App()
+    Cursor.hide()
     app.start()
     set_default()
 
 
 if __name__ == '__main__':
-
     main()
