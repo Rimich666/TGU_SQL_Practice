@@ -122,6 +122,7 @@ class Key(object):
                 pass
             finally:
                 termios.tcsetattr(fd, termios.TCSAFLUSH, old_term)
+        print('result:', result)
         return result
 
 

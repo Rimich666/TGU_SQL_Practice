@@ -67,13 +67,13 @@ class Screen(object):
     def enter(self):
         cell = self._lines[self.current_line][self.current_column]
         if isinstance(cell, ActionCell):
-            cell.enter()
+            cell.on_enter()
         elif isinstance(cell, EditCell):
-            cell.enter()
+            cell.on_enter()
             return cell
         else:
             if self.on_enter:
-                self.on_enter(cell.enter())
+                self.on_enter(cell.on_enter())
 
     def make_header(self):
         def get_head(val, length):

@@ -1,6 +1,5 @@
 import sys
 
-from log import LOG
 from src.cell.cell import Cell, Mode
 from wait_key import Key
 
@@ -19,15 +18,20 @@ class EditCell(Cell):
         self.check_keys = Key.control
         # self._align = Align.map[self._type]
 
-    def _set_cursor_pos(self):
-        pass
-
     def backspace(self):
         if self._cursor_pos > 0:
             head = self._current_text[:self._cursor_pos - 1]
             tail = self._current_text[self._cursor_pos:]
             self._current_text = head + tail
             self._cursor_pos -= 1
+
+    def left(self):
+        if self._cursor_pos > 0:
+            self._cursor_pos -= 1
+
+    def right(self):
+        if self._cursor_pos < len(self._current_text) - 1:
+            self._cursor_pos += 1
 
     def home(self):
         self._cursor_pos = 0
@@ -36,15 +40,21 @@ class EditCell(Cell):
         self._cursor_pos = len(self._current_text) - 1
 
     def on_key(self, key):
-        head = self._current_text[:self._cursor_pos]
-        tail = self._current_text[self._cursor_pos:]
-        self._current_text = head + key + tail
+        pass
+
+    def delete(self):
+        pass
+
+    def enter(self):
+        self._value = self._current_text.strip()
+        self.mode = Mode.view
 
     def on_press(self, key_name):
         if key_name in Key.edit:
             getattr(self, key_name)()
         else:
             self.on_key(key_name)
+        return self.mode == Mode.view
 
     def print(self):
         if self.mode == Mode.view:
@@ -60,7 +70,7 @@ class EditCell(Cell):
             self._default.print()
             sys.stdout.write(tail)
 
-    def enter(self):
+    def on_enter(self):
         self.mode = Mode.edit
     #       "YYYY-MM-DD HH:MM:SS.SSS"
     #       "YYYY-MM-DDTHH:MM:SS.SSS"

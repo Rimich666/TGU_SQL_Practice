@@ -1,4 +1,3 @@
-from log import LOG
 from src.base.database import initialize_database, get_connection
 from src.cell.edit_cell.edit_cell import Mode
 from src.screen.actions_menu import ActionsMenu
@@ -44,6 +43,7 @@ class App(object):
                     self._callback = cell.on_press
                     self.check_key = cell.check_keys
         else:
+            print(key)
             getattr(self.screens[0], key)()
 
     def _stop(self):
@@ -54,15 +54,15 @@ class App(object):
         while self._is_run:
             Terminal.clear()
             self.screens[0].print()
-            # for l in LOG:
-            #     print(l)
             key = Key.wait(self.check_key)
             if key == Key.close:
                 self._is_run = False
             elif self._mode == Mode.view:
                 self.on_press(key)
             elif key and self._mode == Mode.edit:
-                self._callback(key)
+                if self._callback(key):
+                    self._mode = Mode.view
+                    self.check_key = Key.control
 
     def _insert(self):
         self.add_screen(Insert(

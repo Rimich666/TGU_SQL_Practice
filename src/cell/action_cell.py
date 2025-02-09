@@ -7,5 +7,5 @@ class ActionCell(Cell):
         self._on_action = on_action
         self.mode = Mode.action
 
-    def enter(self):
+    def on_enter(self):
         self._on_action()

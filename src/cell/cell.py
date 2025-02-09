@@ -76,8 +76,6 @@ class Cell(object):
         self._default.print()
 
     def _text(self, text):
-        if self.mode == Mode.edit:
-            print('super:', text)
         if self._width == 0:
             return text
         after = 0 if self._align == Align.right else (self._width - len(text)) // self._align
@@ -90,7 +88,7 @@ class Cell(object):
     def align(self, align):
         self._align = align
 
-    def enter(self):
+    def on_enter(self):
         return self._value
 
     def value(self):

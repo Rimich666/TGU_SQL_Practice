@@ -1,8 +1,6 @@
-from log import LOG
 from src.base.pragma import get_fields
 from src.cell.cell import ValueType
 from src.cell.edit_cell.make_edit_cell import make_edit_cell
-from src.cell.edit_cell.text_cell import TextCell
 from src.screen.screen import Screen
 
 
