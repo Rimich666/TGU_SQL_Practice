@@ -9,7 +9,7 @@ class IntCell(EditCell):
         self._current_text = str(value)
         self._cursor_pos = len(self._current_text) - 1
         self._align = Align.right
-        self.check_keys = Key.number
+        self.check_keys = Key.integer
 
     def on_key(self, key):
         if len(self._current_text) < self._width:

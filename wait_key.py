@@ -21,6 +21,10 @@ class Key(object):
         return key in [Key.left, Key.right, Key.down, Key.up, Key.enter, Key.close]
 
     @staticmethod
+    def integer(key):
+        return key in [str(i) for i in range(10)] + Key.edit
+
+    @staticmethod
     def number(key):
         return key in [str(i) for i in range(10)] + ['.'] + Key.edit
 
@@ -127,8 +131,8 @@ class Key(object):
 
 
 if __name__ == '__main__':
-    i = 0
-    while i < 2:
-        key = Key.wait(Key.chars)
-        print('выход', key)
-        i += 1
+    ii = 0
+    while ii < 2:
+        k = Key.wait(Key.chars)
+        print('выход', k)
+        ii += 1
