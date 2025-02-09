@@ -20,20 +20,8 @@ class Insert(Screen):
         super().make_header()
         self._header = f"{self._headers} {' ' * 10}value{' ' * 10}"
 
-    # def make_lines(self, rows):
-    #     lines = super().make_lines(rows)
-    #     obj = make_edit_cell(
-    #                 '', 25, ValueType.map[lines[0][1].value()]
-    #                 )
-    #     LOG[0] = f'{obj}'
-    #     lines = list(map(lambda line: line + [
-    #         TextCell(
-    #             '', 25
-    #         )], super().make_lines(rows)))
-    #     return lines
-
     def make_lines(self, rows):
         lines = list(map(lambda line: line + [make_edit_cell(
-            '', 10, ValueType.map[line[1].value()]
+            '', 25, ValueType.map[line[1].value()]
             )], super().make_lines(rows)))
         return lines
