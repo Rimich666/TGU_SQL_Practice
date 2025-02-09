@@ -1,10 +1,10 @@
 import sys
 
 from src.cell.action_cell import ActionCell
-from src.cell.cell import Cell, Align, Mode
-from src.cell.edit_cell import EditCell
+from src.cell.cell import Cell, Align
+from src.cell.edit_cell.edit_cell import EditCell
+from src.cell.edit_cell.text_cell import TextCell
 from src.terminal.background import Back
-from src.terminal.cursor import Cursor
 from src.terminal.text import Text
 
 
@@ -52,6 +52,7 @@ class Screen(object):
         self._lines[self.current_line][self.current_column].active(True)
 
     def down(self):
+        print('down')
         self.change_cell(line_direction=1)
 
     def up(self):
@@ -101,7 +102,5 @@ class Screen(object):
 
 
 if __name__ == '__main__':
-    n = 1
-    print(type(n) is int)
-    m = 1.5
-    print(type(m) is float or (type(m) is int))
+    cell = TextCell(1, 1)
+    print(isinstance(cell, EditCell))

@@ -1,7 +1,6 @@
 import sys
 
 from src.terminal.background import Back
-from src.terminal.cursor import Cursor
 from src.terminal.text import Text
 from wait_key import Key
 
@@ -22,6 +21,18 @@ class ValueType(object):
         real: Key.number,
         date: Key.number
     }
+    points = {
+        text: [],
+        integer: [],
+        real: [1],
+        date: [3, 6, 9, 12, 15, 18]
+    }
+    templ = {
+        text: ' ',
+        integer: '0',
+        real: '0.0',
+        date: '0001-01-01T00:00:00.000'
+    }
 
 
 class Mode(object):
@@ -35,12 +46,6 @@ class Align(object):
     left = 1
     center = 2
     right = 0
-    map = {
-        ValueType.text: left,
-        ValueType.integer: right,
-        ValueType.real: right,
-        ValueType.date: right
-    }
 
 
 class CellParam(object):
@@ -58,6 +63,7 @@ class Cell(object):
         self._value = value
         self._align = Align.left
         self._width = width
+        self._before = 0
         self._not_active = CellParam()
         self._active = CellParam(Text.black, Back.white)
         self._param = self._not_active
@@ -66,15 +72,17 @@ class Cell(object):
 
     def print(self):
         self._param.print()
-        sys.stdout.write(self._text())
+        sys.stdout.write(self._text(self._value))
         self._default.print()
 
-    def _text(self):
+    def _text(self, text):
+        if self.mode == Mode.edit:
+            print('super:', text)
         if self._width == 0:
-            return self._value
-        after = 0 if self._align == Align.right else (self._width - len(self._value)) // self._align
-        before = self._width - len(str(self._value)) - after
-        return f"{before * ' '}{self._value}{after * ' '}"
+            return text
+        after = 0 if self._align == Align.right else (self._width - len(text)) // self._align
+        self._before = self._width - len(str(text)) - after
+        return f"{self._before * ' '}{text}{after * ' '}"
 
     def active(self, is_active):
         self._param = self._active if is_active else self._not_active

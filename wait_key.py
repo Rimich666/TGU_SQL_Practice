@@ -14,7 +14,7 @@ class Key(object):
     home = 'home'
     end = 'end'
 
-    edit = [back, delete, home, end, enter, close, left, right]
+    edit = [back, delete, home, end, enter, left, right]
 
     @staticmethod
     def control(key):
@@ -26,13 +26,20 @@ class Key(object):
 
     @staticmethod
     def chars(key):
-        return ord(key) > 31 or key in Key.edit
+        if key in Key.edit:
+            return True
+        if len(key) > 1:
+            return False
+        return ord(key) > 31
 
     @staticmethod
     def wait(check=control):
         # key = None
         # while key is None:
         key = Key._wait()
+        if key == Key.delete:
+            _ = Key._wait()
+            return Key.delete
         if not check(key):
             key = None
         return key
@@ -83,14 +90,17 @@ class Key(object):
 
             try:
                 key = sys.stdin.read(1)
-                code = ord(key)
+                code = ord(key[0])
                 print('code1', code)
                 if code == 10:
                     result = Key.enter
+                elif code == 126:
+                    result = Key.delete
                 elif code == 127:
                     result = Key.back
                 elif code == 27:
-                    code = ord(sys.stdin.read(2)[1])
+                    key = sys.stdin.read(2)
+                    code = ord(key[1])
                     print('code2', code)
                     if code == 65:
                         result = Key.up
@@ -112,12 +122,12 @@ class Key(object):
                 pass
             finally:
                 termios.tcsetattr(fd, termios.TCSAFLUSH, old_term)
-
         return result
 
 
 if __name__ == '__main__':
-    key = Key.wait(Key.control)
-    print('выход', key)
-    key2 = Key.wait(Key.number)
-    print('выход', key2)
+    i = 0
+    while i < 2:
+        key = Key.wait(Key.chars)
+        print('выход', key)
+        i += 1

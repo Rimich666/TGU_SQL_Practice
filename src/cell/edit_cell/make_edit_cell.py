@@ -1,0 +1,12 @@
+from log import LOG
+from src.cell.cell import ValueType
+from src.cell.edit_cell.text_cell import TextCell
+
+
+def make_edit_cell(value, width, type_cell):
+    if type_cell == ValueType.text:
+        return TextCell(value, width)
+    if type_cell == ValueType.integer:
+        return TextCell(value, width)
+    if type_cell == ValueType.date:
+        return TextCell(value, width)

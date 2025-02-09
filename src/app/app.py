@@ -1,12 +1,9 @@
-import sys
-
+from log import LOG
 from src.base.database import initialize_database, get_connection
-from src.cell.cell import ValueType
-from src.cell.edit_cell import Mode
+from src.cell.edit_cell.edit_cell import Mode
 from src.screen.actions_menu import ActionsMenu
 from src.screen.insert import Insert
 from src.screen.tables_menu import TablesMenu
-from src.terminal.cursor import Cursor
 from src.terminal.terminal import Terminal
 from wait_key import Key
 
@@ -38,22 +35,16 @@ class App(object):
         initialize_database(self.conn)
 
     def on_press(self, key):
-        if key == Key.down:
-            self.screens[0].down()
-        elif key == Key.up:
-            self.screens[0].up()
-        elif key == Key.left:
-            self.screens[0].left()
-        elif key == Key.right:
-            self.screens[0].right()
-        elif key == Key.enter:
+        if key == Key.enter:
             res = self.screens[0].enter()
             if res:
                 cell = res
                 self._mode = cell.mode
                 if cell.mode == Mode.edit:
                     self._callback = cell.on_press
-                    self.check_key = ValueType.check_map[cell.type()]
+                    self.check_key = cell.check_keys
+        else:
+            getattr(self.screens[0], key)()
 
     def _stop(self):
         self._is_run = False
@@ -63,6 +54,8 @@ class App(object):
         while self._is_run:
             Terminal.clear()
             self.screens[0].print()
+            # for l in LOG:
+            #     print(l)
             key = Key.wait(self.check_key)
             if key == Key.close:
                 self._is_run = False
