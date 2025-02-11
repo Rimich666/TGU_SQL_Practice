@@ -33,14 +33,26 @@ class Screen(object):
         if self._title:
             print(self._title + '\n')
         if self._header:
-            print(self._header)
+            self.print_header()
         for i, line in enumerate(self._lines):
-            sys.stdout.write(Back.default + Text.default + f'{i} ')
+            len_i = len(str(i))
+            width_i = len(str(len(self._fields) - 1))
+            sys.stdout.write(Back.default + Text.default + f'{(width_i - len_i) * " "}{i}')
             for cell in line:
+                sys.stdout.write(' | ')
                 cell.print()
 
             sys.stdout.write('\n')
         sys.stdout.write(Back.default + Text.default)
+
+    def print_header(self):
+        sys.stdout.write(Back.default + Text.default + f'{self._header[0]}')
+        for head in self._header[1:]:
+            sys.stdout.write(' | ')
+            sys.stdout.write(Back.default + Text.default + f'{head}')
+        sys.stdout.write('\n')
+        len_line = sum([len(head) + 3 for head in self._header])
+        print(len_line * '-')
 
     def change_cell(self, line_direction=0, column_direction=0):
         self._lines[self.current_line][self.current_column].active(False)
@@ -84,12 +96,12 @@ class Screen(object):
             len_val = len(str(val))
             before = (length - len_val) // 2
             after = length - len_val - before
-            return f"{before * '_'}{val}{after * '_'}"
+            return f"{before * ' '}{val}{after * ' '}"
 
         if self._fields:
             headers = [get_head(self._headers[i], self._widths[i]) for i in range(len(self._widths))]
             headers.insert(0, get_head('№', len(str(len(self._fields) - 1))))
-            self._header = ' '.join(headers)
+            self._header = headers
         else:
             self._header = None
 

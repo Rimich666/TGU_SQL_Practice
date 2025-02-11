@@ -20,7 +20,7 @@ class Select(Screen):
 
     def make_header(self):
         super().make_header()
-        self._header = f"{self._headers} select {' ' * 10}where{' ' * 10}"
+        self._header += ["select", f"{' ' * 10}where{' ' * 10}"]
 
     def make_lines(self, rows):
         lines = list(map(lambda line: line + [CheckCell()] + [make_edit_cell(

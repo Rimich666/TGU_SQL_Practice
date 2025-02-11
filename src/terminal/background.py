@@ -9,3 +9,4 @@ class Back(object):
     cyan = "\033[46m"
     white = "\033[47m"
     default = "\033[49m"
+    head = blue

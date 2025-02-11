@@ -5,7 +5,7 @@ from wait_key import Key
 
 class CheckCell(EditCell):
     def __init__(self):
-        super().__init__(False, 8)
+        super().__init__(False, 6)
         self.check_keys = Key.check
         self._align = Align.center
 

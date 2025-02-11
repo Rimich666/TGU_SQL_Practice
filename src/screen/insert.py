@@ -18,7 +18,7 @@ class Insert(Screen):
 
     def make_header(self):
         super().make_header()
-        self._header = f"{self._headers} {' ' * 10}value{' ' * 10}"
+        self._header += [f"{' ' * 10}value{' ' * 10}"]
 
     def make_lines(self, rows):
         lines = list(map(lambda line: line + [make_edit_cell(

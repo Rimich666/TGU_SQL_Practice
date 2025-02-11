@@ -10,3 +10,4 @@ class Text(object):
     default = "\033[39m"
     bold = "\033[1m"
     thin = "\033[22m"
+    head = yellow

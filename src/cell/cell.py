@@ -15,24 +15,6 @@ class ValueType(object):
         'Datetime': date,
         'Utf8': text
     }
-    check_map = {
-        text: Key.chars,
-        integer: Key.number,
-        real: Key.number,
-        date: Key.number
-    }
-    points = {
-        text: [],
-        integer: [],
-        real: [1],
-        date: [3, 6, 9, 12, 15, 18]
-    }
-    templ = {
-        text: ' ',
-        integer: '0',
-        real: '0.0',
-        date: '0001-01-01T00:00:00.000'
-    }
 
 
 class Mode(object):
