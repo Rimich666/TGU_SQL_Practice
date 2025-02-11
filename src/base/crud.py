@@ -36,6 +36,7 @@ def select(data):
     """
         Возвращает выборку из таблицы.
     """
+    # data = from_file(dt, 'select')
     is_all = sum(data['select'].values()) == 0
     is_where = sum([not not val for val in data['where'].values()]) > 0
     columns = tuple(f'{key}' for key in filter(
@@ -48,10 +49,12 @@ def select(data):
     FROM "{data['table']}"
     {where} 
     """
-    rows = get_one(query)
+    rows = get_all(query)
     rows.insert(0, columns)
     width = tuple(map(max, reduce(append, rows, [[] for _ in rows[0]])))
-    return get_all(query)
+    print(width)
+    rows.insert(1, width)
+    return rows
 
 
 def update_book(book_id, title=None, author=None, published_year=None, genre=None):
