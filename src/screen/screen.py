@@ -63,6 +63,11 @@ class Screen(object):
     def left(self):
         self.change_cell(column_direction=-1)
 
+    def delete(self):
+        cell = self._lines[self.current_line][self.current_column]
+        if isinstance(cell, EditCell):
+            cell.clear()
+
     def enter(self):
         cell = self._lines[self.current_line][self.current_column]
         if isinstance(cell, ActionCell):

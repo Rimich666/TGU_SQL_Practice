@@ -17,8 +17,12 @@ class Key(object):
     edit = [back, delete, home, end, enter, left, right]
 
     @staticmethod
+    def check(key):
+        return key == Key.enter
+
+    @staticmethod
     def control(key):
-        return key in [Key.left, Key.right, Key.down, Key.up, Key.enter, Key.close]
+        return key in [Key.left, Key.right, Key.down, Key.up, Key.enter, Key.close, Key.delete]
 
     @staticmethod
     def integer(key):
@@ -43,7 +47,7 @@ class Key(object):
         key = Key._wait()
         if key == Key.delete:
             _ = Key._wait()
-            return Key.delete
+            key = Key.delete
         if not check(key):
             key = None
         return key
@@ -131,8 +135,6 @@ class Key(object):
 
 
 if __name__ == '__main__':
-    ii = 0
-    while ii < 2:
-        k = Key.wait(Key.chars)
-        print('выход', k)
-        ii += 1
+
+    k = Key.wait(Key.control)
+    print('выход', k)

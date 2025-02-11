@@ -1,6 +1,6 @@
 from functools import reduce
 
-from src.base.database import get_connection
+from src.base.database import get_connection, get_one, get_all
 
 
 def get_tables():
@@ -20,23 +20,22 @@ def get_fields(table, with_pk=True):
     """
     Возвращает поля таблицы.
     """
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute(f"""
+    query = f"""
         SELECT NOT sql LIKE "%INTEGER PRIMARY KEY AUTOINCREMENT%" AS no_auto 
         FROM sqlite_master 
         WHERE name='{table}';
-    """)
-    no_auto = cursor.fetchone()[0]
-
-    cursor.execute(f"""
+    """
+    no_auto = get_one(query)
+    query = f"""
         SELECT name, type, pk
         FROM PRAGMA_table_info('{table}');
-    """)
-    cond = with_pk + no_auto + 1
-    fields = list(filter(lambda row: int(row[2]) < cond, cursor.fetchall()))
+    """
 
-    conn.close()
+    info = get_all(query)
+
+    cond = with_pk + no_auto + 1
+    fields = list(filter(lambda row: int(row[2]) < cond, info))
+
     fields.insert(0, ('name', 'type', 'pk'))
     width = tuple(map(max, reduce(append, fields, [[] for _ in fields[0]])))
     fields.insert(1, width)

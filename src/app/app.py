@@ -1,9 +1,11 @@
-from src.base.crud import insert
+from src.base.crud import insert, select
 from src.base.database import initialize_database, get_connection
 from src.cell.edit_cell.edit_cell import Mode
 from src.screen.actions_menu import ActionsMenu
 from src.screen.insert import Insert
+from src.screen.select import Select
 from src.screen.tables_menu import TablesMenu
+from src.screen.view import View
 from src.terminal.terminal import Terminal
 from wait_key import Key
 
@@ -56,6 +58,8 @@ class App(object):
             Terminal.clear()
             self.screens[0].print()
             key = Key.wait(self.check_key)
+            if key is None:
+                continue
             if key == Key.close:
                 self._is_run = False
             elif self._mode == Mode.view:
@@ -78,8 +82,20 @@ class App(object):
                 ('Назад', self.pop_screen)
             ]))
 
+    def _select_table(self):
+        self.add_screen(View(
+            select(self.screens[0].get_values()),
+            [
+                ('Назад', self.pop_screen)
+            ]))
+
     def _select(self):
-        pass
+        self.add_screen(Select(
+            self._table,
+            [
+                ('Запросить', self._select_table),
+                ('Назад', self.pop_screen)
+            ]))
 
     def _update(self):
         pass

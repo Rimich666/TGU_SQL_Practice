@@ -35,5 +35,25 @@ def clean_after_yourself(conn):
         exec_script(conn, query)
 
 
+def get_one(query):
+    print(query)
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(query)
+    res = cursor.fetchone()
+    conn.close()
+    return res[0]
+
+
+def get_all(query):
+    print(query)
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(query)
+    res = cursor.fetchall()
+    conn.close()
+    return res
+
+
 if __name__ == '__main__':
     initialize_database(get_connection())

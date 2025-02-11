@@ -8,15 +8,10 @@ class EditCell(Cell):
     def __init__(self, value, width):
         super().__init__(value, width)
         self._edit_mode = Mode.view
-        # if str(self._value):
-        #     self._current_text = str(self._value) + ' ' if self._type == ValueType.text else ''
-        # else:
-        #     self._current_text = ValueType.templ.get(self._type)
         self._current_text = ''
         self._cursor_pos = 0
         self.mode = Mode.view
         self.check_keys = Key.control
-        # self._align = Align.map[self._type]
 
     def backspace(self):
         if self._cursor_pos > 0:
@@ -49,6 +44,9 @@ class EditCell(Cell):
         self._value = self._current_text.strip()
         self.mode = Mode.view
 
+    def clear(self):
+        self._value = ''
+
     def on_press(self, key_name):
         if key_name in Key.edit:
             getattr(self, key_name)()
@@ -72,6 +70,3 @@ class EditCell(Cell):
 
     def on_enter(self):
         self.mode = Mode.edit
-    #       "YYYY-MM-DD HH:MM:SS.SSS"
-    #       "YYYY-MM-DDTHH:MM:SS.SSS"
-    #     pass

@@ -1,51 +1,57 @@
 import json
+from functools import reduce
 from pathlib import Path
 
-from src.base.database import get_connection, exec_script
+from src.base.database import get_connection, exec_script, get_one, get_all
+from src.base.pragma import append
+
+
+def to_file(data, action):
+    path = Path(__file__).parents[2].joinpath('data').joinpath(f"{action}_{data['table']}.json")
+    with open(path, 'w') as file:
+        file.write(json.dumps(data))
+
+
+def from_file(data, action):
+    path = Path(__file__).parents[2].joinpath('data').joinpath(f"{action}_{data['table']}.json")
+    with open(path, 'r') as file:
+        dt = json.loads(file.read())
+    return dt
 
 
 def insert(data):
     """
         Добавляет данные в таблицу.
     """
-    # path = Path(__file__).parents[2].joinpath('data').joinpath(f"insert_{data['table']}.json")
-    # with open(path, 'w') as file:
-    #     file.write(json.dumps(data))
-    # with open(path, 'r') as file:
-    #     dt = json.loads(file.read())
     query = f"""
     INSERT INTO "{data['table']}"
     ({', '.join([f'"{key}"'for key in data['fields'].keys()])}) 
     VALUES ({', '.join([f'"{val}"' for val in data['fields'].values()])})
+    RETURNING id;
     """
-    print(query)
-    exec_script(get_connection(), query)
+    return get_one(query)
 
 
-def add_book(title, author, published_year, genre):
+def select(data):
     """
-    Добавляет новую книгу в таблицу Books.
+        Возвращает выборку из таблицы.
     """
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO Books (title, author, published_year, genre)
-        VALUES (?, ?, ?, ?)
-    """, (title, author, published_year, genre))
-    conn.commit()
-    conn.close()
-
-
-def get_books():
+    is_all = sum(data['select'].values()) == 0
+    is_where = sum([not not val for val in data['where'].values()]) > 0
+    columns = tuple(f'{key}' for key in filter(
+        lambda key: data['select'][key] or is_all, data['select'].keys()))
+    print(columns)
+    where = 'WHERE' + ' AND '.join([f'"{item[0]}" = "{item[1]}"' for item in filter(
+        lambda item: not not item[1], data['where'].items())]) if is_where else ''
+    query = f"""
+    SELECT {', '.join([f'"{col}"' for col in columns])} 
+    FROM "{data['table']}"
+    {where} 
     """
-    Возвращает список всех книг.
-    """
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Books")
-    books = cursor.fetchall()
-    conn.close()
-    return books
+    rows = get_one(query)
+    rows.insert(0, columns)
+    width = tuple(map(max, reduce(append, rows, [[] for _ in rows[0]])))
+    return get_all(query)
 
 
 def update_book(book_id, title=None, author=None, published_year=None, genre=None):
@@ -81,4 +87,4 @@ def delete_book(book_id):
 
 
 if __name__ == "__main__":
-    insert({'table': 'users'})
+    print(select({'table': 'users'}))
