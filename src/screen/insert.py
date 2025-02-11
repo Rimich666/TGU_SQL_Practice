@@ -8,7 +8,7 @@ class Insert(Screen):
     def __init__(self, table, actions):
         super().__init__()
         self._table = table
-        self._fields = get_fields(table)
+        self._fields = get_fields(table, False)
         self._headers = self._fields[0]
         self._widths = self._fields[1]
         self._actions = actions
@@ -22,6 +22,13 @@ class Insert(Screen):
 
     def make_lines(self, rows):
         lines = list(map(lambda line: line + [make_edit_cell(
-            '', 25, ValueType.map[line[1].value()]
+            '', 25, ValueType.map[line[1].value]
             )], super().make_lines(rows)))
         return lines
+
+    def get_values(self):
+        fields = {item[0].value: item[len(self._fields[0])].value for item in self._lines[:len(self._fields) - 2]}
+        return {
+            'table': self._table,
+            'fields': fields
+        }

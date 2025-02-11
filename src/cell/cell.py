@@ -91,6 +91,7 @@ class Cell(object):
     def on_enter(self):
         return self._value
 
+    @property
     def value(self):
         return self._value
 

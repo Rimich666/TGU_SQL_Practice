@@ -1,4 +1,26 @@
-from src.base.database import get_connection
+import json
+from pathlib import Path
+
+from src.base.database import get_connection, exec_script
+
+
+def insert(data):
+    """
+        Добавляет данные в таблицу.
+    """
+    # path = Path(__file__).parents[2].joinpath('data').joinpath(f"insert_{data['table']}.json")
+    # with open(path, 'w') as file:
+    #     file.write(json.dumps(data))
+    # with open(path, 'r') as file:
+    #     dt = json.loads(file.read())
+    query = f"""
+    INSERT INTO "{data['table']}"
+    ({', '.join([f'"{key}"'for key in data['fields'].keys()])}) 
+    VALUES ({', '.join([f'"{val}"' for val in data['fields'].values()])})
+    """
+    print(query)
+    exec_script(get_connection(), query)
+
 
 def add_book(title, author, published_year, genre):
     """
@@ -13,6 +35,7 @@ def add_book(title, author, published_year, genre):
     conn.commit()
     conn.close()
 
+
 def get_books():
     """
     Возвращает список всех книг.
@@ -23,6 +46,7 @@ def get_books():
     books = cursor.fetchall()
     conn.close()
     return books
+
 
 def update_book(book_id, title=None, author=None, published_year=None, genre=None):
     """
@@ -44,6 +68,7 @@ def update_book(book_id, title=None, author=None, published_year=None, genre=Non
     conn.commit()
     conn.close()
 
+
 def delete_book(book_id):
     """
     Удаляет книгу по ID.
@@ -53,3 +78,7 @@ def delete_book(book_id):
     cursor.execute("DELETE FROM Books WHERE id = ?", (book_id,))
     conn.commit()
     conn.close()
+
+
+if __name__ == "__main__":
+    insert({'table': 'users'})

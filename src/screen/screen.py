@@ -52,7 +52,6 @@ class Screen(object):
         self._lines[self.current_line][self.current_column].active(True)
 
     def down(self):
-        print('down')
         self.change_cell(line_direction=1)
 
     def up(self):

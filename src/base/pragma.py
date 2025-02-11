@@ -16,22 +16,31 @@ def get_tables():
     return tables
 
 
-def get_fields(table):
+def get_fields(table, with_pk=True):
     """
     Возвращает поля таблицы.
     """
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(f"""
+        SELECT NOT sql LIKE "%INTEGER PRIMARY KEY AUTOINCREMENT%" AS no_auto 
+        FROM sqlite_master 
+        WHERE name='{table}';
+    """)
+    no_auto = cursor.fetchone()[0]
+
+    cursor.execute(f"""
         SELECT name, type, pk
         FROM PRAGMA_table_info('{table}');
     """)
-    tables = cursor.fetchall()
+    cond = with_pk + no_auto + 1
+    fields = list(filter(lambda row: int(row[2]) < cond, cursor.fetchall()))
+
     conn.close()
-    tables.insert(0, ('name', 'type', 'pk'))
-    width = tuple(map(max, reduce(append, tables, [[] for _ in tables[0]])))
-    tables.insert(1, width)
-    return tables
+    fields.insert(0, ('name', 'type', 'pk'))
+    width = tuple(map(max, reduce(append, fields, [[] for _ in fields[0]])))
+    fields.insert(1, width)
+    return fields
 
 
 def append(acc, cur):
@@ -64,7 +73,8 @@ if __name__ == '__main__':
     #
     #     return list(map(lambda row: tuple([get_cell(row[i], widths[i]) for i in range(len(row))]), rows))
 
-    fields = get_fields('users')
-    header = make_header(fields)
+    fields = get_fields('audio', True)
+    print(fields)
+    # header = make_header(fields)
     # lines = make_lines(fields[2:], fields[1])
     # print(lines)

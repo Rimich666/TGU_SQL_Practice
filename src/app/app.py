@@ -1,3 +1,4 @@
+from src.base.crud import insert
 from src.base.database import initialize_database, get_connection
 from src.cell.edit_cell.edit_cell import Mode
 from src.screen.actions_menu import ActionsMenu
@@ -64,10 +65,16 @@ class App(object):
                     self._mode = Mode.view
                     self.check_key = Key.control
 
+    def _insert_table(self):
+        if isinstance(self.screens[0], Insert):
+            insert(self.screens[0].get_values())
+        pass
+
     def _insert(self):
         self.add_screen(Insert(
             self._table,
             [
+                ('Записать', self._insert_table),
                 ('Назад', self.pop_screen)
             ]))
 

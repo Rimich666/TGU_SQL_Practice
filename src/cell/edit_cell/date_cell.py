@@ -15,8 +15,6 @@ class DateCell(EditCell):
 
     def on_key(self, key):
         if self._templ[self._cursor_pos] in self._fields:
-            if key == '0' and self._templ[self._cursor_pos] != '0':
-                return
             text = self._current_text
             pos = self._cursor_pos
             self._current_text = text[: pos] + key + text[pos + 1:]
