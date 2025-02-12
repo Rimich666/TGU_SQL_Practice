@@ -7,7 +7,8 @@ class Text(object):
     magenta = "\033[35m"
     cyan = "\033[36m"
     white = "\033[37m"
-    default = "\033[39m"
+    default = "\033[39m" + "\033[22m"
     bold = "\033[1m"
     thin = "\033[22m"
-    head = yellow
+    head = yellow + bold
+    line = white + bold

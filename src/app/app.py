@@ -1,7 +1,8 @@
-from src.base.crud import insert, select
+from src.base.crud import insert, select, select_all
 from src.base.database import initialize_database, get_connection
 from src.cell.edit_cell.edit_cell import Mode
 from src.screen.actions_menu import ActionsMenu
+from src.screen.choice import Choice
 from src.screen.insert import Insert
 from src.screen.select import Select
 from src.screen.tables_menu import TablesMenu
@@ -98,7 +99,14 @@ class App(object):
             ]))
 
     def _update(self):
-        pass
+        def choice(pk, value):
+
+            pass
+        self.add_screen(Choice(
+            select_all(self._table),
+            actions=[('Назад', self.pop_screen)],
+            on_enter=choice
+        ))
 
     def _delete(self):
         pass

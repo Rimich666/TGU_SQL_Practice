@@ -2,7 +2,6 @@ import sys
 
 from src.terminal.background import Back
 from src.terminal.text import Text
-from wait_key import Key
 
 
 class ValueType(object):

@@ -22,6 +22,13 @@ class Screen(object):
         self._lines = []
         self._actions = actions
 
+    def set_fields(self):
+        self._headers = self._fields[0]
+        self._widths = self._fields[1]
+        self._lines = self.make_lines(self._fields[2:])
+        self.set_actions()
+        self.make_header()
+
     def set_actions(self):
         if self._actions is not None:
             for action in self._actions:
@@ -39,20 +46,20 @@ class Screen(object):
             width_i = len(str(len(self._fields) - 1))
             sys.stdout.write(Back.default + Text.default + f'{(width_i - len_i) * " "}{i}')
             for cell in line:
-                sys.stdout.write(' | ')
+                sys.stdout.write(Back.default + Text.line + ' | ')
                 cell.print()
 
             sys.stdout.write('\n')
         sys.stdout.write(Back.default + Text.default)
 
     def print_header(self):
-        sys.stdout.write(Back.default + Text.default + f'{self._header[0]}')
+        sys.stdout.write(Back.head + Text.head + f'{self._header[0]}')
         for head in self._header[1:]:
-            sys.stdout.write(' | ')
-            sys.stdout.write(Back.default + Text.default + f'{head}')
+            sys.stdout.write(Back.default + Text.line + ' | ')
+            sys.stdout.write(Back.head + Text.head + f'{head}')
         sys.stdout.write('\n')
         len_line = sum([len(head) + 3 for head in self._header])
-        print(len_line * '-')
+        sys.stdout.write(Back.default + Text.line + len_line * '-' + '\n')
 
     def change_cell(self, line_direction=0, column_direction=0):
         self._lines[self.current_line][self.current_column].active(False)
