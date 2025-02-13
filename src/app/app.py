@@ -99,11 +99,12 @@ class App(object):
             ]))
 
     def _update(self):
-        def choice(pk, value):
+        def choice(_):
 
             pass
+        rows, pk, types = select_all(self._table)
         self.add_screen(Choice(
-            select_all(self._table),
+            rows, pk,
             actions=[('Назад', self.pop_screen)],
             on_enter=choice
         ))

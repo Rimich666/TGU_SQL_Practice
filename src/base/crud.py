@@ -32,17 +32,23 @@ def insert(data):
     return get_one(query)
 
 
+def select_values(info):
+    to_file(info, 'select')
+    pass
+
+
 def select_all(table):
     fields = get_fields(table, True)[2:]
     pk = [field[0] for field in fields if field[2] == 1][0]
     fields_name = [field[0] for field in fields]
+    fields_type = [field[1] for field in fields]
     columns = {field: True for field in fields_name}
     where = {fields_name[0]: False}
     return select({
         'table': table,
         'select': columns,
         'where': where
-    }), pk
+    }), pk, fields_type
 
 
 def select(data):
