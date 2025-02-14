@@ -8,7 +8,7 @@ class Insert(Screen):
     def __init__(self, table, actions):
         super().__init__(actions=actions)
         self._table = table
-        self._fields = get_fields(table, False)
+        self._fields, self._pk = get_fields(table, False)
         self.set_fields()
 
     def make_header(self):
@@ -25,5 +25,6 @@ class Insert(Screen):
         fields = {item[0].value: item[len(self._fields[0])].value for item in self._lines[:len(self._fields) - 2]}
         return {
             'table': self._table,
-            'fields': fields
+            'fields': fields,
+            'pk': self._pk
         }

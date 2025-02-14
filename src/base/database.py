@@ -60,5 +60,13 @@ def get_all(query):
     return res
 
 
+def execute(query):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(query)
+    conn.commit()
+    conn.close()
+
+
 if __name__ == '__main__':
     initialize_database(get_connection())

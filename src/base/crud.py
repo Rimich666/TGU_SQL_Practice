@@ -2,7 +2,7 @@ import json
 from functools import reduce
 from pathlib import Path
 
-from src.base.database import get_connection, exec_script, get_one, get_all, log
+from src.base.database import get_connection, get_one, get_all, log, execute
 from src.base.pragma import append, get_fields
 
 
@@ -27,7 +27,7 @@ def insert(data):
     INSERT INTO "{data['table']}"
     ({', '.join([f'"{key}"'for key in data['fields'].keys()])}) 
     VALUES ({', '.join([f'"{val}"' for val in data['fields'].values()])})
-    RETURNING id;
+    RETURNING {data['pk']};
     """
     return get_one(query)
 
@@ -38,8 +38,11 @@ def select_values(info):
 
 
 def select_all(table):
-    fields = get_fields(table, True)[2:]
+    print(table)
+    fields = get_fields(table, True)[0][2:]
+    print(fields)
     pk = [field[0] for field in fields if field[2] == 1][0]
+    log(str(pk))
     fields_name = [field[0] for field in fields]
     fields_type = [field[1] for field in fields]
     columns = {field: True for field in fields_name}
@@ -89,26 +92,23 @@ def update(data):
     UPDATE {data['table']} 
     SET {query_set} 
     WHERE {where}
-    RETURNING id;
+    RETURNING {data["where"]["pk"]};
     """
 
     return get_one(query)
 
 
 def delete(data):
-    to_file(data, 'update')
-
-
-def delete_book(book_id):
-    """
-    Удаляет книгу по ID.
-    """
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("DELETE FROM Books WHERE id = ?", (book_id,))
-    conn.commit()
-    conn.close()
+    # to_file(data, 'update')
+    # return True
+    # data = from_file(dt, 'delete')
+    single_quote = "'"
+    query = f"""
+        DELETE FROM {data['table']} 
+        WHERE "{data['pk']}" = {single_quote + str(data['val']) + single_quote}
+        """
+    execute(query)
 
 
 if __name__ == "__main__":
-    print(update({'table': 'users'}))
+    print(delete({'table': 'users'}))

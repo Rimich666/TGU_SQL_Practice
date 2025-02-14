@@ -143,6 +143,7 @@ class App(object):
                 'pk': pk,
                 'val': val
             })
+            self.screens[0].reinit()
 
         self.add_screen(Choice(
             self._table,

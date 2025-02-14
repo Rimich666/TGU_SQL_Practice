@@ -10,7 +10,7 @@ class Select(Screen):
         super().__init__()
         print(table)
         self._table = table
-        self._fields = get_fields(table, True)
+        self._fields, _ = get_fields(table, True)
         self._headers = self._fields[0]
         self._widths = self._fields[1]
         self._actions = actions

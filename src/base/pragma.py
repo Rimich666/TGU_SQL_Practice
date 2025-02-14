@@ -35,11 +35,12 @@ def get_fields(table, with_pk=True):
 
     cond = with_pk + no_auto + 1
     fields = list(filter(lambda row: int(row[2]) < cond, info))
+    pk = list(filter(lambda row: int(row[2]) == 1, info))[0][0]
 
     fields.insert(0, ('name', 'type', 'pk'))
     width = tuple(map(max, reduce(append, fields, [[] for _ in fields[0]])))
     fields.insert(1, width)
-    return fields
+    return fields, pk
 
 
 def append(acc, cur):
