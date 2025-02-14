@@ -2,7 +2,7 @@ import json
 from functools import reduce
 from pathlib import Path
 
-from src.base.database import get_connection, exec_script, get_one, get_all
+from src.base.database import get_connection, exec_script, get_one, get_all, log
 from src.base.pragma import append, get_fields
 
 
@@ -77,25 +77,26 @@ def select(data):
     return rows
 
 
-def update_book(book_id, title=None, author=None, published_year=None, genre=None):
+def update(data):
+    # to_file(data, 'update')
+    # return True
+    # data = from_file(dt, 'update')
+    single_quote = "'"
+    query_set = ', '.join([f'"{item[0]}" = {single_quote + item[1] + single_quote}' for item in data['fields'].items()])
+    where = f'"{data["where"]["pk"]}" = {single_quote + str(data["where"]["value"]) + single_quote}'
+
+    query = f"""
+    UPDATE {data['table']} 
+    SET {query_set} 
+    WHERE {where}
+    RETURNING id;
     """
-    Обновляет данные книги по ее ID.
-    """
-    conn = get_connection()
-    cursor = conn.cursor()
-    updates = []
-    if title:
-        updates.append(f"title = '{title}'")
-    if author:
-        updates.append(f"author = '{author}'")
-    if published_year:
-        updates.append(f"published_year = {published_year}")
-    if genre:
-        updates.append(f"genre = '{genre}'")
-    query = f"UPDATE Books SET {', '.join(updates)} WHERE id = {book_id}"
-    cursor.execute(query)
-    conn.commit()
-    conn.close()
+
+    return get_one(query)
+
+
+def delete(data):
+    to_file(data, 'update')
 
 
 def delete_book(book_id):
@@ -110,4 +111,4 @@ def delete_book(book_id):
 
 
 if __name__ == "__main__":
-    print(select({'table': 'users'}))
+    print(update({'table': 'users'}))

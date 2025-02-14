@@ -1,4 +1,4 @@
-from src.base.crud import insert, select, select_all
+from src.base.crud import insert, select, update, select_all, delete
 from src.base.database import initialize_database, get_connection
 from src.cell.edit_cell.edit_cell import Mode
 from src.screen.actions_menu import ActionsMenu
@@ -6,6 +6,7 @@ from src.screen.choice import Choice
 from src.screen.insert import Insert
 from src.screen.select import Select
 from src.screen.tables_menu import TablesMenu
+from src.screen.update import Update
 from src.screen.view import View
 from src.terminal.terminal import Terminal
 from wait_key import Key
@@ -73,13 +74,21 @@ class App(object):
     def _insert_table(self):
         if isinstance(self.screens[0], Insert):
             insert(self.screens[0].get_values())
-        pass
+            self.pop_screen()
+            self.view()
 
     def _insert(self):
         self.add_screen(Insert(
             self._table,
             [
                 ('Записать', self._insert_table),
+                ('Назад', self.pop_screen)
+            ]))
+
+    def view(self):
+        self.add_screen(View(
+            select_all(self._table),
+            [
                 ('Назад', self.pop_screen)
             ]))
 
@@ -98,19 +107,48 @@ class App(object):
                 ('Назад', self.pop_screen)
             ]))
 
+    def _update_table(self):
+        if isinstance(self.screens[0], Update):
+            update(self.screens[0].get_values())
+            self.pop_screen()
+            self.screens[0].reinit()
+
     def _update(self):
         def choice(_):
+            props = {
+                'columns': self.screens[0].columns,
+                'values': self.screens[0].values,
+                'types': self.screens[0].types,
+                'pk': self.screens[0].pk
+            }
+            self.add_screen(Update(
+                self._table,
+                props,
+                [
+                    ('Изменить', self._update_table),
+                    ('Назад', self.pop_screen)
+                ]))
 
-            pass
-        rows, pk, types = select_all(self._table)
         self.add_screen(Choice(
-            rows, pk,
+            self._table,
             actions=[('Назад', self.pop_screen)],
             on_enter=choice
         ))
 
     def _delete(self):
-        pass
+        def choice(_):
+            pk, val = self.screens[0].pk
+            delete({
+                'table': self._table,
+                'pk': pk,
+                'val': val
+            })
+
+        self.add_screen(Choice(
+            self._table,
+            actions=[('Назад', self.pop_screen)],
+            on_enter=choice
+        ))
 
     def add_screen(self, screen):
         Terminal.clear()

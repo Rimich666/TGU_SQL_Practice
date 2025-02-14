@@ -3,6 +3,12 @@ import sqlite3  # SQLite входит в стандартную библиоте
 from pathlib import Path
 
 
+def log(text):
+    path = Path(__file__).parents[2].joinpath('data').joinpath("log.txt")
+    with open(path, 'a') as file:
+        file.write(text + '\n')
+
+
 def get_connection():
     """Создает соединение с базой данных."""
     dir_path = Path(__file__).parents[2].joinpath('data')
@@ -36,17 +42,16 @@ def clean_after_yourself(conn):
 
 
 def get_one(query):
-    print(query)
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(query)
     res = cursor.fetchone()
+    conn.commit()
     conn.close()
     return res[0]
 
 
 def get_all(query):
-    print(query)
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(query)

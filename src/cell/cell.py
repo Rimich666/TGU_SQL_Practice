@@ -59,7 +59,7 @@ class Cell(object):
     def _text(self, text):
         if self._width == 0:
             return text
-        after = 0 if self._align == Align.right else (self._width - len(text)) // self._align
+        after = 0 if self._align == Align.right else (self._width - len(str(text))) // self._align
         self._before = self._width - len(str(text)) - after
         return f"{self._before * ' '}{text}{after * ' '}"
 

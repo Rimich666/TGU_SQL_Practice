@@ -33,7 +33,7 @@ class Screen(object):
         if self._actions is not None:
             for action in self._actions:
                 self._lines.append([ActionCell(*action)])
-        self._lines[0][0].active(True)
+        self._lines[self.current_line][self.current_column].active(True)
 
     def print(self):
         sys.stdout.write(Back.default + Text.default)
