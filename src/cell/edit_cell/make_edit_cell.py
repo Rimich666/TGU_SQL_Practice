@@ -1,4 +1,5 @@
-from src.cell.cell import ValueType
+from src.cell.edit_cell.bool_cell import BoolCell
+from src.cell.value_type import ValueType
 from src.cell.edit_cell.date_cell import DateCell
 from src.cell.edit_cell.int_cell import IntCell
 from src.cell.edit_cell.real_cell import RealCell
@@ -14,3 +15,5 @@ def make_edit_cell(value, width, type_cell):
         return DateCell(value, width)
     if type_cell == ValueType.real:
         return RealCell(value, width)
+    if type_cell == ValueType.bool:
+        return BoolCell(value, width)

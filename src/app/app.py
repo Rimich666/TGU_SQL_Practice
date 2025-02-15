@@ -29,10 +29,10 @@ class App(object):
                 ('Выход', self._stop)
             ]
         )
+        self._table = None
         self.screens = []
         self.conn = get_connection()
         self._is_run = True
-        self._table = None
         self.check_key = Key.control
         self._mode = Mode.view
         self._callback = None
@@ -48,7 +48,6 @@ class App(object):
                     self._callback = cell.on_press
                     self.check_key = cell.check_keys
         else:
-            print(key)
             getattr(self.screens[0], key)()
 
     def _stop(self):
@@ -87,7 +86,7 @@ class App(object):
 
     def view(self):
         self.add_screen(View(
-            select_all(self._table),
+            select_all(self._table)[0],
             [
                 ('Назад', self.pop_screen)
             ]))
@@ -165,4 +164,5 @@ class App(object):
 
     def enter_table(self, name):
         self._table = name
+        self.actions_menu.table = name
         self.add_screen(self.actions_menu)

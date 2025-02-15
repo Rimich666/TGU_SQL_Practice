@@ -99,7 +99,6 @@ class Key(object):
             try:
                 key = sys.stdin.read(1)
                 code = ord(key[0])
-                print('code1', code)
                 if code == 10:
                     result = Key.enter
                 elif code == 126:
@@ -109,7 +108,6 @@ class Key(object):
                 elif code == 27:
                     key = sys.stdin.read(2)
                     code = ord(key[1])
-                    print('code2', code)
                     if code == 65:
                         result = Key.up
                     elif code == 51:
@@ -130,11 +128,8 @@ class Key(object):
                 pass
             finally:
                 termios.tcsetattr(fd, termios.TCSAFLUSH, old_term)
-        print('result:', result)
         return result
 
 
 if __name__ == '__main__':
-
-    k = Key.wait(Key.control)
-    print('выход', k)
+    print(os.get_terminal_size().lines)

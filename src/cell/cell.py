@@ -4,18 +4,6 @@ from src.terminal.background import Back
 from src.terminal.text import Text
 
 
-class ValueType(object):
-    text = 'string',
-    integer = 'integer',
-    real = 'float',
-    date = 'datetime'
-    map = {
-        'INTEGER': integer,
-        'Datetime': date,
-        'Utf8': text
-    }
-
-
 class Mode(object):
     edit = 0,
     view = 1,

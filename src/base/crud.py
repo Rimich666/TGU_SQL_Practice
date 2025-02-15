@@ -2,7 +2,7 @@ import json
 from functools import reduce
 from pathlib import Path
 
-from src.base.database import get_connection, get_one, get_all, log, execute
+from src.base.database import get_one, get_all, log, execute
 from src.base.pragma import append, get_fields
 
 
@@ -58,9 +58,6 @@ def select(data):
     """
         Возвращает выборку из таблицы.
     """
-    # to_file(data, 'select')
-    # return
-    # data = from_file(dt, 'select')
     single_quote = "'"
     is_all = sum(data['select'].values()) == 0
     is_where = sum([not not val for val in data['where'].values()]) > 0
@@ -81,9 +78,6 @@ def select(data):
 
 
 def update(data):
-    # to_file(data, 'update')
-    # return True
-    # data = from_file(dt, 'update')
     single_quote = "'"
     query_set = ', '.join([f'"{item[0]}" = {single_quote + item[1] + single_quote}' for item in data['fields'].items()])
     where = f'"{data["where"]["pk"]}" = {single_quote + str(data["where"]["value"]) + single_quote}'
@@ -99,9 +93,6 @@ def update(data):
 
 
 def delete(data):
-    # to_file(data, 'update')
-    # return True
-    # data = from_file(dt, 'delete')
     single_quote = "'"
     query = f"""
         DELETE FROM {data['table']} 

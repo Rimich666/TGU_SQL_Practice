@@ -1,4 +1,5 @@
-from src.cell.cell import ValueType, Cell
+from src.cell.cell import Cell
+from src.cell.value_type import ValueType
 from src.cell.edit_cell.make_edit_cell import make_edit_cell
 from src.screen.screen import Screen
 
@@ -7,6 +8,7 @@ class Update(Screen):
     def __init__(self, table, props, actions=None):
         super().__init__(actions=actions)
         self._table = table
+        self._title = f'Изменение записи в таблице "{self._table}"'
         self._values = props['values']
         self._pk, self._pk_val = props['pk']
         self._create_fields(props)

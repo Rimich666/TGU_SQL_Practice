@@ -1,5 +1,5 @@
 from src.base.pragma import get_fields
-from src.cell.cell import ValueType
+from src.cell.value_type import ValueType
 from src.cell.edit_cell.check_cell import CheckCell
 from src.cell.edit_cell.make_edit_cell import make_edit_cell
 from src.screen.screen import Screen
@@ -10,6 +10,7 @@ class Select(Screen):
         super().__init__()
         print(table)
         self._table = table
+        self._title = f'Создание запроса к таблице "{self._table}"'
         self._fields, _ = get_fields(table, True)
         self._headers = self._fields[0]
         self._widths = self._fields[1]

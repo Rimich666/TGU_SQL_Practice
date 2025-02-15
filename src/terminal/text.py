@@ -12,3 +12,4 @@ class Text(object):
     thin = "\033[22m"
     head = yellow + bold
     line = white + bold
+    title = green + bold

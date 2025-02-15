@@ -1,3 +1,4 @@
+import os
 import sys
 
 from src.cell.action_cell import ActionCell
@@ -38,7 +39,7 @@ class Screen(object):
     def print(self):
         sys.stdout.write(Back.default + Text.default)
         if self._title:
-            print(self._title + '\n')
+            sys.stdout.write(Back.default + Text.title + self._title + '\n\n')
         if self._header:
             self.print_header()
         for i, line in enumerate(self._lines):
@@ -53,12 +54,13 @@ class Screen(object):
         sys.stdout.write(Back.default + Text.default)
 
     def print_header(self):
+        len_line = sum([len(head) + 3 for head in self._header])
+        sys.stdout.write(Back.default + Text.line + len_line * '-' + '\n')
         sys.stdout.write(Back.head + Text.head + f'{self._header[0]}')
         for head in self._header[1:]:
             sys.stdout.write(Back.default + Text.line + ' | ')
             sys.stdout.write(Back.head + Text.head + f'{head}')
         sys.stdout.write('\n')
-        len_line = sum([len(head) + 3 for head in self._header])
         sys.stdout.write(Back.default + Text.line + len_line * '-' + '\n')
 
     def change_cell(self, line_direction=0, column_direction=0):
@@ -100,6 +102,7 @@ class Screen(object):
 
     def make_header(self):
         def get_head(val, length):
+            print('length =', length)
             len_val = len(str(val))
             before = (length - len_val) // 2
             after = length - len_val - before
@@ -122,8 +125,3 @@ class Screen(object):
             return cell
 
         return list(map(lambda row: list([get_cell(row[i], self._widths[i]) for i in range(len(row))]), rows))
-
-
-if __name__ == '__main__':
-    cell = TextCell(1, 1)
-    print(isinstance(cell, EditCell))

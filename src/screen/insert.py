@@ -1,5 +1,5 @@
 from src.base.pragma import get_fields
-from src.cell.cell import ValueType
+from src.cell.value_type import ValueType
 from src.cell.edit_cell.make_edit_cell import make_edit_cell
 from src.screen.screen import Screen
 
@@ -8,6 +8,7 @@ class Insert(Screen):
     def __init__(self, table, actions):
         super().__init__(actions=actions)
         self._table = table
+        self._title = f'Добавление записи в таблицу "{self._table}"'
         self._fields, self._pk = get_fields(table, False)
         self.set_fields()
 
