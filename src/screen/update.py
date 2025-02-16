@@ -1,12 +1,14 @@
+from src.cell.Align import Align
 from src.cell.cell import Cell
+from src.cell.choice_cell import ChoiceCell
 from src.cell.value_type import ValueType
 from src.cell.edit_cell.make_edit_cell import make_edit_cell
 from src.screen.screen import Screen
 
 
 class Update(Screen):
-    def __init__(self, table, props, actions=None):
-        super().__init__(actions=actions)
+    def __init__(self, table, props, actions, on_choice):
+        super().__init__(actions=actions, on_enter=on_choice)
         self._table = table
         self._title = f'Изменение записи в таблице "{self._table}"'
         self._values = props['values']
@@ -31,7 +33,12 @@ class Update(Screen):
             val = self._fields[index + 2][2]
             width = self._fields[1][2]
             name = self._fields[index + 2][0]
-            return line + [Cell(val, width) if name == self._pk else make_edit_cell(val, width, ValueType.map[type_val])]
+            fk = self._fk.get(name, None)
+            if fk is None and name != self._pk:
+                return line + [make_edit_cell(val, width, ValueType.map[type_val])]
+            cell = Cell(val, width) if name == self._pk else ChoiceCell((val, fk), width)
+            cell.align = Align.by_type(ValueType.map[line[1].value])
+            return line + [cell]
 
         lines = list(map(lambda item: get_cell(item), enumerate(super().make_lines([row[:-1] for row in rows]))))
         return lines

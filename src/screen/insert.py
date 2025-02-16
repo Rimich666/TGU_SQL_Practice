@@ -24,7 +24,6 @@ class Insert(Screen):
         def get_cell(line):
             name = line[0].value
             fk = self._fk.get(name, None)
-
             if fk is None:
                 return make_edit_cell('', WIDTH, ValueType.map[line[1].value])
             cell = ChoiceCell(('', fk), WIDTH)

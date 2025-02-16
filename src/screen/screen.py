@@ -12,6 +12,7 @@ from src.terminal.text import Text
 
 class Screen(object):
     def __init__(self, on_enter=None, actions=None):
+        self._hat = 0
         self.current_line = 0
         self.current_column = 0
         self.on_enter = on_enter
@@ -43,9 +44,9 @@ class Screen(object):
     def print(self):
         sys.stdout.write(Back.default + Text.default)
         if self._title:
-            sys.stdout.write(Back.default + Text.title + self._title + '\n\n')
+            self._print_title()
         if self._header:
-            self.print_header()
+            self._print_header()
         for i, line in enumerate(self._lines):
             len_i = len(str(i))
             width_i = len(str(len(self._fields) - 1))
@@ -57,7 +58,12 @@ class Screen(object):
             sys.stdout.write('\n')
         sys.stdout.write(Back.default + Text.default)
 
-    def print_header(self):
+    def _print_title(self):
+        count = len(list(filter(lambda lit: lit == '\n', self._title))) + 2
+        sys.stdout.write(Back.default + Text.title + self._title + '  ' + str(count) + '\n\n')
+        self._hat += count
+
+    def _print_header(self):
         len_line = sum([len(head) + 3 for head in self._header])
         sys.stdout.write(Back.default + Text.line + len_line * '-' + '\n')
         sys.stdout.write(Back.head + Text.head + f'{self._header[0]}')
@@ -66,6 +72,7 @@ class Screen(object):
             sys.stdout.write(Back.head + Text.head + f'{head}')
         sys.stdout.write('\n')
         sys.stdout.write(Back.default + Text.line + len_line * '-' + '\n')
+        self._hat += 3
 
     def change_cell(self, line_direction=0, column_direction=0):
         self._lines[self.current_line][self.current_column].active(False)

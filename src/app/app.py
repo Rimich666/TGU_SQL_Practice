@@ -73,8 +73,8 @@ class App(object):
     def _insert_table(self):
         if isinstance(self.screens[0], Insert):
             insert(self.screens[0].get_values())
-            self.pop_screen()
-            if isinstance(self.screens[0], Choice):
+            if isinstance(self.screens[1], Choice):
+                self.pop_screen()
                 self.screens[0].reinit()
             else:
                 self.view()
@@ -153,7 +153,7 @@ class App(object):
                 [
                     ('Изменить', self._update_table),
                     ('Назад', self.pop_screen)
-                ]))
+                ], self.show_select))
 
         self.add_screen(Choice(
             self._table,

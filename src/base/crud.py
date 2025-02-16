@@ -38,20 +38,19 @@ def select_values(info):
 
 
 def select_all(table):
-    print(table)
     fields = get_fields(table, True)[0][2:]
-    print(fields)
     pk = [field[0] for field in fields if field[2] == 1][0]
     log(str(pk))
     fields_name = [field[0] for field in fields]
     fields_type = [field[1] for field in fields]
     columns = {field: True for field in fields_name}
     where = {fields_name[0]: False}
-    return select({
+    res = select({
         'table': table,
         'select': columns,
         'where': where
-    }), pk, fields_type
+    })
+    return res[0], pk, fields_type
 
 
 def select(data):
@@ -74,7 +73,7 @@ def select(data):
     rows.insert(0, columns)
     width = tuple(map(max, reduce(append, rows, [[] for _ in rows[0]])))
     rows.insert(1, width)
-    return rows
+    return rows, query
 
 
 def update(data):
