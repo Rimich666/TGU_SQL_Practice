@@ -1,5 +1,7 @@
+import os
 import sys
 
+from src.base.database import log
 from src.base.pragma import get_foreign_keys
 from src.cell.action_cell import ActionCell
 from src.cell.cell import Cell
@@ -8,6 +10,9 @@ from src.cell.choice_cell import ChoiceCell
 from src.cell.edit_cell.edit_cell import EditCell
 from src.terminal.background import Back
 from src.terminal.text import Text
+
+TITLE_COUNT = 2
+HEADER_COUNT = 3
 
 
 class Screen(object):
@@ -25,6 +30,7 @@ class Screen(object):
         self._footer = None
         self._table = None
         self._lines = []
+        self._frame = ()
         self._actions = actions
 
     def set_fields(self):
@@ -32,8 +38,10 @@ class Screen(object):
         self._widths = self._fields[1]
         self._fk = get_foreign_keys(self._table)
         self._lines = self.make_lines(self._fields[2:])
+        self._frame = (0, len(self._lines))
         self.set_actions()
         self.make_header()
+        self._hat += (len(list(filter(lambda lit: lit == '\n', self._title))) + TITLE_COUNT + HEADER_COUNT)
 
     def set_actions(self):
         if self._actions is not None:
@@ -47,7 +55,8 @@ class Screen(object):
             self._print_title()
         if self._header:
             self._print_header()
-        for i, line in enumerate(self._lines):
+        self._calc_frame()
+        for i, line in list(enumerate(self._lines))[self._frame[0]: self._frame[1]]:
             len_i = len(str(i))
             width_i = len(str(len(self._fields) - 1))
             sys.stdout.write(Back.default + Text.default + f'{(width_i - len_i) * " "}{i}')
@@ -59,9 +68,7 @@ class Screen(object):
         sys.stdout.write(Back.default + Text.default)
 
     def _print_title(self):
-        count = len(list(filter(lambda lit: lit == '\n', self._title))) + 2
-        sys.stdout.write(Back.default + Text.title + self._title + '  ' + str(count) + '\n\n')
-        self._hat += count
+        sys.stdout.write(Back.default + Text.title + self._title + '\n\n')
 
     def _print_header(self):
         len_line = sum([len(head) + 3 for head in self._header])
@@ -72,7 +79,24 @@ class Screen(object):
             sys.stdout.write(Back.head + Text.head + f'{head}')
         sys.stdout.write('\n')
         sys.stdout.write(Back.default + Text.line + len_line * '-' + '\n')
-        self._hat += 3
+
+    def _calc_frame(self):
+        all_count = os.get_terminal_size().lines - 1
+        free_count = all_count - self._hat
+        log(f'{all_count}, {self._hat}, {free_count}')
+        log(f'{self.current_line}, {self._frame}')
+        if len(self._lines) > free_count:
+            if self._frame[0] > self.current_line:
+                log(f'calc 1: {self._frame[0]}')
+                self._frame = (self.current_line, self.current_line + free_count)
+            elif self.current_line >= self._frame[1]:
+                log(f'calc 2: {self.current_line - free_count}')
+                self._frame = (self.current_line - free_count + 1, self.current_line + 1)
+            else:
+                log(f'calc 3: {self._frame[0] + free_count}')
+                self._frame = (self._frame[0], self._frame[0] + free_count)
+        else:
+            self._frame = (0, len(self._lines))
 
     def change_cell(self, line_direction=0, column_direction=0):
         self._lines[self.current_line][self.current_column].active(False)
