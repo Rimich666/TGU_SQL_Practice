@@ -43,7 +43,22 @@ def get_fields(table, with_pk=True):
     return fields, pk
 
 
+def get_foreign_keys(table):
+    print('get_foreign_keys')
+    query = f"""
+    SELECT "table", "from", "to" 
+    FROM PRAGMA_foreign_key_list('{table}');
+    """
+    res = get_all(query)
+    keys = {row[1]: {'table': row[0], 'to': row[2]} for row in get_all(query)} if res else {}
+    return keys
+
+
 def append(acc, cur):
     for index in range(len(cur)):
         acc[index].append(len(str(cur[index])))
     return acc
+
+
+if __name__ == '__main__':
+    print(get_foreign_keys('user_lists'))

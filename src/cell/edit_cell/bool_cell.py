@@ -1,4 +1,5 @@
-from src.cell.cell import Align, Mode
+from src.cell.cell import Mode
+from src.cell.Align import Align
 from src.cell.edit_cell.edit_cell import EditCell
 from wait_key import Key
 

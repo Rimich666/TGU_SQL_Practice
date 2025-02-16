@@ -1,6 +1,6 @@
 import datetime
 
-from src.cell.cell import Align
+from src.cell.Align import Align
 from src.cell.edit_cell.edit_cell import EditCell
 from wait_key import Key
 

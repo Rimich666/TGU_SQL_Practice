@@ -74,7 +74,34 @@ class App(object):
         if isinstance(self.screens[0], Insert):
             insert(self.screens[0].get_values())
             self.pop_screen()
-            self.view()
+            if isinstance(self.screens[0], Choice):
+                self.screens[0].reinit()
+            else:
+                self.view()
+
+    def show_select(self, cell):
+        def choice(_):
+            pk, val = self.screens[0].pk
+            cell.value = val
+            self.pop_screen()
+
+        def new():
+            self.add_screen(Insert(
+                cell.table,
+                [
+                    ('Записать', self._insert_table),
+                    ('Назад', self.pop_screen)
+                ], self.show_select))
+
+        self.add_screen(Choice(
+            cell.table,
+            actions=[
+                ('Добавить', new),
+                ('Назад', self.pop_screen)
+            ],
+            on_enter=choice
+        ))
+        pass
 
     def _insert(self):
         self.add_screen(Insert(
@@ -82,7 +109,7 @@ class App(object):
             [
                 ('Записать', self._insert_table),
                 ('Назад', self.pop_screen)
-            ]))
+            ], self.show_select))
 
     def view(self):
         self.add_screen(View(

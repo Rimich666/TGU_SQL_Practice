@@ -1,12 +1,16 @@
 from src.base.pragma import get_fields
+from src.cell.Align import Align
+from src.cell.choice_cell import ChoiceCell
 from src.cell.value_type import ValueType
 from src.cell.edit_cell.make_edit_cell import make_edit_cell
 from src.screen.screen import Screen
 
+WIDTH = 25
+
 
 class Insert(Screen):
-    def __init__(self, table, actions):
-        super().__init__(actions=actions)
+    def __init__(self, table, actions, on_choice):
+        super().__init__(actions=actions, on_enter=on_choice)
         self._table = table
         self._title = f'Добавление записи в таблицу "{self._table}"'
         self._fields, self._pk = get_fields(table, False)
@@ -17,9 +21,17 @@ class Insert(Screen):
         self._header += [f"{' ' * 10}value{' ' * 10}"]
 
     def make_lines(self, rows):
-        lines = list(map(lambda line: line + [make_edit_cell(
-            '', 25, ValueType.map[line[1].value]
-            )], super().make_lines(rows)))
+        def get_cell(line):
+            name = line[0].value
+            fk = self._fk.get(name, None)
+
+            if fk is None:
+                return make_edit_cell('', WIDTH, ValueType.map[line[1].value])
+            cell = ChoiceCell(('', fk), WIDTH)
+            cell.align = Align.by_type(ValueType.map[line[1].value])
+            return cell
+
+        lines = list(map(lambda line: line + [get_cell(line)], super().make_lines(rows)))
         return lines
 
     def get_values(self):

@@ -44,6 +44,7 @@ def clean_after_yourself(conn):
 def get_one(query):
     conn = get_connection()
     cursor = conn.cursor()
+    print(query)
     cursor.execute(query)
     res = cursor.fetchone()
     conn.commit()

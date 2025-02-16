@@ -1,10 +1,11 @@
-import os
 import sys
 
+from src.base.pragma import get_foreign_keys
 from src.cell.action_cell import ActionCell
-from src.cell.cell import Cell, Align
+from src.cell.cell import Cell
+from src.cell.Align import Align
+from src.cell.choice_cell import ChoiceCell
 from src.cell.edit_cell.edit_cell import EditCell
-from src.cell.edit_cell.text_cell import TextCell
 from src.terminal.background import Back
 from src.terminal.text import Text
 
@@ -15,17 +16,20 @@ class Screen(object):
         self.current_column = 0
         self.on_enter = on_enter
         self._fields = []
+        self._fk = {}
         self._widths = ()
         self._headers = ()
         self._title = None
         self._header = None
         self._footer = None
+        self._table = None
         self._lines = []
         self._actions = actions
 
     def set_fields(self):
         self._headers = self._fields[0]
         self._widths = self._fields[1]
+        self._fk = get_foreign_keys(self._table)
         self._lines = self.make_lines(self._fields[2:])
         self.set_actions()
         self.make_header()
@@ -96,13 +100,14 @@ class Screen(object):
         elif isinstance(cell, EditCell):
             cell.on_enter()
             return cell
+        elif isinstance(cell, ChoiceCell):
+            self.on_enter(cell)
         else:
             if self.on_enter:
                 self.on_enter(cell.on_enter())
 
     def make_header(self):
         def get_head(val, length):
-            print('length =', length)
             len_val = len(str(val))
             before = (length - len_val) // 2
             after = length - len_val - before
@@ -120,8 +125,7 @@ class Screen(object):
         def get_cell(val, length):
             cell = Cell(val, length)
             is_numeric = type(val) is float or (type(val) is int)
-            align = Align.right if is_numeric else Align.left
-            cell.align(align)
+            cell.align = Align.right if is_numeric else Align.left
             return cell
 
         return list(map(lambda row: list([get_cell(row[i], self._widths[i]) for i in range(len(row))]), rows))

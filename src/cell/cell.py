@@ -1,5 +1,6 @@
 import sys
 
+from src.cell.Align import Align
 from src.terminal.background import Back
 from src.terminal.text import Text
 
@@ -9,12 +10,6 @@ class Mode(object):
     view = 1,
     choice = 2,
     action = 3
-
-
-class Align(object):
-    left = 1
-    center = 2
-    right = 0
 
 
 class CellParam(object):
@@ -54,6 +49,11 @@ class Cell(object):
     def active(self, is_active):
         self._param = self._active if is_active else self._not_active
 
+    @property
+    def align(self):
+        return self._align
+
+    @align.setter
     def align(self, align):
         self._align = align
 
@@ -63,6 +63,10 @@ class Cell(object):
     @property
     def value(self):
         return self._value
+
+    @value.setter
+    def value(self, value):
+        self._value = value
 
 
 if __name__ == '__main__':
