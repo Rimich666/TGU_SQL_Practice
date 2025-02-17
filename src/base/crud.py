@@ -50,7 +50,7 @@ def select_all(table):
         'select': columns,
         'where': where
     })
-    return res[0], pk, fields_type
+    return res[0], pk, fields_type, res[1]
 
 
 def select(data):
@@ -78,7 +78,7 @@ def select(data):
 
 def update(data):
     single_quote = "'"
-    query_set = ', '.join([f'"{item[0]}" = {single_quote + item[1] + single_quote}' for item in data['fields'].items()])
+    query_set = ', '.join([f'"{item[0]}" = {single_quote + str(item[1]) + single_quote}' for item in data['fields'].items()])
     where = f'"{data["where"]["pk"]}" = {single_quote + str(data["where"]["value"]) + single_quote}'
 
     query = f"""

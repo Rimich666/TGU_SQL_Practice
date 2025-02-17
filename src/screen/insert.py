@@ -26,7 +26,7 @@ class Insert(Screen):
             fk = self._fk.get(name, None)
             if fk is None:
                 return make_edit_cell('', WIDTH, ValueType.map[line[1].value])
-            cell = ChoiceCell(('', fk), WIDTH)
+            cell = ChoiceCell(('', fk, name), WIDTH)
             cell.align = Align.by_type(ValueType.map[line[1].value])
             return cell
 

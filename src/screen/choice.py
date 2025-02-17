@@ -3,13 +3,14 @@ from src.screen.screen import Screen
 
 
 class Choice(Screen):
-    def __init__(self, table, on_enter=None, actions=None):
-
+    def __init__(self, table, on_enter=None, actions=None, props=None):
         super().__init__(on_enter, actions)
-        # self._types = self._pk = None
         self._table = table
-        rows, self._pk, self._types = select_all(self._table)
+        rows, self._pk, self._types, _ = select_all(self._table)
         self._fields = list(rows)
+        field_from = props.get('from', False)
+        title_field = f''' в поле "{field_from}"''' if field_from else ''
+        self._title = f'''Выбор записи для {props['action']}{title_field} таблицы "{props['table']}"'''
         self.set_fields()
 
     def reinit(self):

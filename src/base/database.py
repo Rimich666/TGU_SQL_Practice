@@ -48,7 +48,7 @@ def get_one(query):
     res = cursor.fetchone()
     conn.commit()
     conn.close()
-    return res[0]
+    return res[0] if res else None
 
 
 def get_all(query):

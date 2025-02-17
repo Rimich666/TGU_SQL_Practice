@@ -1,5 +1,6 @@
 from src.base.crud import insert, select, update, select_all, delete
 from src.base.database import initialize_database, get_connection
+from src.cell.choice_cell import ChoiceCell
 from src.cell.edit_cell.edit_cell import Mode
 from src.screen.actions_menu import ActionsMenu
 from src.screen.choice import Choice
@@ -93,15 +94,21 @@ class App(object):
                     ('Назад', self.pop_screen)
                 ], self.show_select))
 
-        self.add_screen(Choice(
-            cell.table,
-            actions=[
-                ('Добавить', new),
-                ('Назад', self.pop_screen)
-            ],
-            on_enter=choice
-        ))
-        pass
+        if isinstance(cell, ChoiceCell):
+            props = {
+                'action': 'вставки',
+                'table': self._table,
+                'from': cell.name,
+            }
+            self.add_screen(Choice(
+                cell.table,
+                actions=[
+                    ('Добавить', new),
+                    ('Назад', self.pop_screen)
+                ],
+                on_enter=choice,
+                props=props
+            ))
 
     def _insert(self):
         self.add_screen(Insert(
@@ -113,7 +120,7 @@ class App(object):
 
     def view(self):
         self.add_screen(View(
-            select_all(self._table)[0],
+            select_all(self._table),
             [
                 ('Назад', self.pop_screen)
             ]))
@@ -158,7 +165,11 @@ class App(object):
         self.add_screen(Choice(
             self._table,
             actions=[('Назад', self.pop_screen)],
-            on_enter=choice
+            on_enter=choice,
+            props={
+                'action': 'обновления',
+                'table': self._table
+            }
         ))
 
     def _delete(self):
@@ -174,7 +185,11 @@ class App(object):
         self.add_screen(Choice(
             self._table,
             actions=[('Назад', self.pop_screen)],
-            on_enter=choice
+            on_enter=choice,
+            props={
+                'action': 'удаление из',
+                'table': self._table
+            }
         ))
 
     def add_screen(self, screen):

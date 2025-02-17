@@ -36,7 +36,7 @@ class Update(Screen):
             fk = self._fk.get(name, None)
             if fk is None and name != self._pk:
                 return line + [make_edit_cell(val, width, ValueType.map[type_val])]
-            cell = Cell(val, width) if name == self._pk else ChoiceCell((val, fk), width)
+            cell = Cell(val, width) if name == self._pk else ChoiceCell((val, fk, name), width)
             cell.align = Align.by_type(ValueType.map[line[1].value])
             return line + [cell]
 

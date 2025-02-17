@@ -1,7 +1,6 @@
 import os
 import sys
 
-from src.base.database import log
 from src.base.pragma import get_foreign_keys
 from src.cell.action_cell import ActionCell
 from src.cell.cell import Cell
@@ -41,7 +40,8 @@ class Screen(object):
         self._frame = (0, len(self._lines))
         self.set_actions()
         self.make_header()
-        self._hat += (len(list(filter(lambda lit: lit == '\n', self._title))) + TITLE_COUNT + HEADER_COUNT)
+        title_size = len(list(filter(lambda lit: lit == '\n', self._title))) + TITLE_COUNT if self._title else 0
+        self._hat += (title_size + HEADER_COUNT)
 
     def set_actions(self):
         if self._actions is not None:
@@ -83,17 +83,12 @@ class Screen(object):
     def _calc_frame(self):
         all_count = os.get_terminal_size().lines - 1
         free_count = all_count - self._hat
-        log(f'{all_count}, {self._hat}, {free_count}')
-        log(f'{self.current_line}, {self._frame}')
         if len(self._lines) > free_count:
             if self._frame[0] > self.current_line:
-                log(f'calc 1: {self._frame[0]}')
                 self._frame = (self.current_line, self.current_line + free_count)
             elif self.current_line >= self._frame[1]:
-                log(f'calc 2: {self.current_line - free_count}')
                 self._frame = (self.current_line - free_count + 1, self.current_line + 1)
             else:
-                log(f'calc 3: {self._frame[0] + free_count}')
                 self._frame = (self._frame[0], self._frame[0] + free_count)
         else:
             self._frame = (0, len(self._lines))

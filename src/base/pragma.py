@@ -25,12 +25,13 @@ def get_fields(table, with_pk=True):
         FROM sqlite_master 
         WHERE name='{table}';
     """
+    print(query)
     no_auto = get_one(query)
     query = f"""
         SELECT name, type, pk
         FROM PRAGMA_table_info('{table}');
     """
-
+    print(query)
     info = get_all(query)
 
     cond = with_pk + no_auto + 1
