@@ -1,5 +1,5 @@
 import os
-import sqlite3  # SQLite входит в стандартную библиотеку Python
+import sqlite3
 from pathlib import Path
 
 

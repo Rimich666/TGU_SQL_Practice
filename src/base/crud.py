@@ -32,11 +32,6 @@ def insert(data):
     return get_one(query)
 
 
-def select_values(info):
-    to_file(info, 'select')
-    pass
-
-
 def select_all(table):
     fields = get_fields(table, True)[0][2:]
     pk = [field[0] for field in fields if field[2] == 1][0]
