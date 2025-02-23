@@ -62,9 +62,10 @@ class EditCell(Cell):
             pos = self._cursor_pos + self._before if self._cursor_pos < self._width - 1 else self._width - 1
             head = text[:pos]
             tail = text[pos + 1:]
+            sym = text[pos]
             sys.stdout.write(head)
             self._param.print()
-            sys.stdout.write(text[pos])
+            sys.stdout.write(sym)
             self._default.print()
             sys.stdout.write(tail)
 

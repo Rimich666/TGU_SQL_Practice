@@ -19,6 +19,10 @@ def get_connection():
 
 
 def exec_script(conn, query):
+    """
+        Исполняет скрипт
+        Требует передачи коннекта
+    """
     cursor = conn.cursor()
     cursor.executescript(query)
     conn.commit()
@@ -36,12 +40,19 @@ def initialize_database(conn):
 
 
 def clean_after_yourself(conn):
+    """
+        Предназначена для зачистки мусора за собой.
+        Никогда нигде не вызывается.
+    """
     with open(Path(__file__).parents[0].joinpath('sql', 'drop_tables.sql'), 'r') as f:
         query = f.read()
         exec_script(conn, query)
 
 
 def get_one(query):
+    """
+        Возвращает скаляр по запросу
+    """
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(query)
@@ -52,6 +63,9 @@ def get_one(query):
 
 
 def get_all(query):
+    """
+        Возвращает набор данных по запросу
+    """
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(query)
@@ -61,6 +75,10 @@ def get_all(query):
 
 
 def execute(query):
+    """
+        Екзекутит запрос, ничего не возвращает
+        Коннектит базу самостоятельно
+    """
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(query)

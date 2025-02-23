@@ -119,8 +119,9 @@ class App(object):
             ], self.show_select))
 
     def view(self):
+        res = select_all(self._table)
         self.add_screen(View(
-            select_all(self._table),
+            (res[0], res[1]),
             [
                 ('Назад', self.pop_screen)
             ]))

@@ -7,17 +7,12 @@ from src.screen.screen import Screen
 
 class Select(Screen):
     def __init__(self, table, actions):
-        super().__init__()
+        super().__init__(actions=actions)
         print(table)
         self._table = table
         self._title = f'Создание запроса к таблице "{self._table}"'
         self._fields, _ = get_fields(table, True)
-        self._headers = self._fields[0]
-        self._widths = self._fields[1]
-        self._actions = actions
-        self._lines = self.make_lines(self._fields[2:])
-        super().set_actions()
-        self.make_header()
+        self.set_fields()
 
     def make_header(self):
         super().make_header()

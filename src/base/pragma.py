@@ -45,7 +45,9 @@ def get_fields(table, with_pk=True):
 
 
 def get_foreign_keys(table):
-    print('get_foreign_keys')
+    """
+        Возвращает вторичные ключи таблицы.
+    """
     query = f"""
     SELECT "table", "from", "to" 
     FROM PRAGMA_foreign_key_list('{table}');
